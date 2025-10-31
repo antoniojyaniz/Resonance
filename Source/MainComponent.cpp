@@ -2,14 +2,12 @@
 
 juce::String formatTime(double seconds);
 
-// ===== Helpers (implementations). Declare these two in MainComponent.h (private):
+// helpers 
 void MainComponent::clearVisuals()
 {
     if (isClearing) return;                  // guard against re-entry
     isClearing = true;
 
-    // IMPORTANT: do not call clearVisuals() from ANY function these call.
-    // These methods must not trigger the helpers again.
     oscilloscopeDisplay.clear();
     waveformDisplay.clear();
     stereoImageDisplay.clear();
@@ -20,10 +18,10 @@ void MainComponent::clearVisuals()
 
 void MainComponent::resetMetersAndAnalyzers()
 {
-    if (isResetting) return;                 // guard against re-entry
+    if (isResetting) return;                 //guard 
     isResetting = true;
 
-    // Reset UI meters
+    //Reset UI meters
     leftMeterDisplay.setLevel(-60.0f);
     rightMeterDisplay.setLevel(-60.0f);
     lufsLeftMeterDisplay.setLevel(-60.0f);
@@ -31,12 +29,12 @@ void MainComponent::resetMetersAndAnalyzers()
     tpLeftMeterDisplay.setLevel(-60.0f);
     tpRightMeterDisplay.setLevel(-60.0f);
 
-    // Reset analyzer state (no UI callbacks here)
+    //Reset analyzer state 
     lufsMeter.clear();
     tpLeftSmooth = -60.0f;
     tpRightSmooth = -60.0f;
 
-    // Reset transport UI (no notifications -> won’t fire lambdas)
+    //Reset transport UI 
     positionSlider.setValue(0.0, juce::dontSendNotification);
     timeLabel.setText("00:00", juce::dontSendNotification);
 
@@ -771,3 +769,4 @@ void MainComponent::resized()
         meterBox.getWidth() - 20,
         18);
 }
+
