@@ -2,8 +2,6 @@
 
 A real-time audio visualization and metering app built with JUCE. It lets you analyze live or recorded audio through multiple synchronized visualizers — including a spectrum analyzer, oscilloscope, stereo image display, waveform viewer, and LUFS/dB/True Peak meters.
 
-## Demo 
-
 ## How It’s Made
 
 This project was built using the JUCE audio application framework. The app captures either microphone input or audio playback, processes it through FFT and RMS algorithms, and drives five different real-time visualizers.
