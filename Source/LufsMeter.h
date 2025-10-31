@@ -1,4 +1,3 @@
-// LufsMeter.h
 #pragma once
 #include <JuceHeader.h>
 
@@ -9,7 +8,7 @@ public:
     {
         sampleRate = sr;
 
-        // Set coefficients the portable way (use .coefficients, not .state)
+        //Set coefficients the portable way (use .coefficients, not .state)
         auto hpL = juce::dsp::IIR::Coefficients<float>::makeHighPass(sr, 60.0, 0.5f);
         auto hpR = juce::dsp::IIR::Coefficients<float>::makeHighPass(sr, 60.0, 0.5f);
         auto shL = juce::dsp::IIR::Coefficients<float>::makeHighShelf(sr, 4000.0, 0.707f,
@@ -45,7 +44,7 @@ public:
         hpfL.reset(); hpfR.reset(); shelfL.reset(); shelfR.reset();
     }
 
-    // Feed one block (mic or playback). Mono input is duplicated to stereo.
+    //Feed one block (mic or playback). Mono input is duplicated to stereo.
     void processBlock(const juce::AudioBuffer<float>& in)
     {
         const int n = in.getNumSamples();
@@ -70,20 +69,20 @@ public:
             float L = work.getSample(0, i);
             float R = work.getSample(1, i);
 
-            // K-weighting: HPF then High-shelf (+4 dB @ 4 kHz)
+            //K-weighting: HPF then High-shelf (+4 dB @ 4 kHz)
             L = shelfL.processSample(hpfL.processSample(L));
             R = shelfR.processSample(hpfR.processSample(R));
 
-            // BS.1770 mean channel power
+            //BS.1770 mean channel power
             const float p = 0.5f * (L * L + R * R);
 
-            // Momentary (400 ms)
+            //Momentary (400 ms)
             mSum -= mRing[mIdx];
             mRing[mIdx] = p;
             mSum += p;
             mIdx = (mIdx + 1) % mWinSamples;
 
-            // Short-term (3 s)
+            //Short-term (3 s)
             sSum -= sRing[sIdx];
             sRing[sIdx] = p;
             sSum += p;
@@ -97,25 +96,26 @@ public:
 private:
     double sampleRate = 48000.0;
 
-    // Per-channel filters for K-weighting
+    //Per-channel filters for K-weighting
     juce::dsp::IIR::Filter<float> hpfL, hpfR;
     juce::dsp::IIR::Filter<float> shelfL, shelfR;
 
-    // Running windows
+    //Running windows
     int mWinSamples = 1, sWinSamples = 1;
     std::vector<float> mRing, sRing;
     int mIdx = 0, sIdx = 0;
     double mSum = 0.0, sSum = 0.0;
 
-    // Workspace
+    //Workspace
     juce::AudioBuffer<float> work;
 
     static float powerToLufs(double meanPower)
     {
-        if (meanPower <= 0.0) return -100.0f;           // floor
+        if (meanPower <= 0.0) return -100.0f;           //floor
         const double dbfs = 10.0 * std::log10(meanPower);
-        return (float)(dbfs - 0.691);                  // BS.1770 calibration
+        return (float)(dbfs - 0.691);                  //BS.1770 calibration
     }
 
     static double avgPower(double sum, int n) { return (n > 0) ? sum / (double)n : 0.0; }
 };
+
